@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { BASE_URL } from "../../utils/constants";
 import React, { useState } from "react";
+import { useRouter } from 'next/router';
 
 type Props = {};
 
 const SignInForm = (props: Props) => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -28,26 +31,33 @@ const SignInForm = (props: Props) => {
     }
   };
 
+    console.log(email, "email");
+    console.log(password, "password");
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsLoading(true);
 
     try {
-      const response = await fetch("url", {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
-        body: JSON.stringify({}),
+        body: JSON.stringify({email : email, password : password}),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
+      if (response) {       
+        const bearerToken = data.token; // Extract the token from the response
+        localStorage.setItem('bearerToken', bearerToken); // Store the token securely
+        router.push('/available-bounties');
+        console.log(response,"data"); 
+        return bearerToken;
+    }
 
-      console.log(data);
-
-      setEmail("");
-      setPassword("");
+      // setEmail("");
+      // setPassword("");
       //setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -57,7 +67,8 @@ const SignInForm = (props: Props) => {
 
   return (
     <>
-      <form onSubmit={formSubmitHandler} action="" className="font-dmSans">
+      <form onSubmit={(e) => formSubmitHandler(e)}
+      action="" className="font-dmSans">
         <div className="space-y-[8px] md:space-y-[16px] ">
           <div className="flex flex-col space-y-1">
             <label
@@ -98,15 +109,13 @@ const SignInForm = (props: Props) => {
           </div>
         </div>
 
-        <Link href="available-bounties">
-          <button
+        <button
             type="submit"
             className="mt-[30px] md:mt-[50px]  item just hover:btnBackgroundGradient bg-[#141414] cursor-pointer rounded-[8px] h-[50px] w-full  font-semibold  text-base md:text-lg "
             disabled={!isFormValid}
           >
             Proceed
           </button>
-        </Link>
 
         <div className="flex flex-row  gap-2 items-center justify-center mt-4 text-base">
           <p className="font-normal text-base md:font-medium md:text-lg">

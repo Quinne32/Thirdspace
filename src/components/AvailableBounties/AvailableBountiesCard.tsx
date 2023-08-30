@@ -24,7 +24,7 @@ const AvailableBountiesCard = (props: any) => {
 
   const handleBountyClick = (selectedBounty: Bounty) => {
     setShowModal(true);
-    setSelectedBounty(selectedBounty);
+    setSelectedBounty(selectedBounty)
   };
 
   return (
@@ -113,7 +113,7 @@ const AvailableBountiesCard = (props: any) => {
             </div>
           </div>
         </div>
-      ))}
+      ))};
 
       {/* BountyDetail Modal */}
       <BountyDetailModal
@@ -121,7 +121,6 @@ const AvailableBountiesCard = (props: any) => {
         onClose={() => setShowModal(false)}
         selectedBounty={selectedBounty}
       ></BountyDetailModal>
-
       <div className=" flex border border-[#999] items-center mx-auto justify-center w-1/2 mb-10 mt-2 ">
         <button className="text-[#999]">Load more...</button>
       </div>

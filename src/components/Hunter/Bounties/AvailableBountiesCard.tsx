@@ -1,8 +1,10 @@
 import { AvailableBountiesData } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import  { useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import BountyDetailModal from "./BountyDetailModal";
+
 
 type Props = {
   selectedBounty: Bounty | null;
@@ -19,13 +21,35 @@ type Bounty = {
 };
 
 const AvailableBountiesCard = (props: Props) => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [bounties, setBounties] = useState([]);
   const [selectedBounty, setSelectedBounty] = useState<Bounty | null>(null);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("@/pages/api/Bounty/getBounty");
+        const data = await response.json();
+        setBounties(data);
+        console.log(data, "BOUNTIES");
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+
+  },[])
 
   const handleBountyClick = (selectedBounty: Bounty) => {
     setShowModal(true);
     setSelectedBounty(selectedBounty);
   };
+
+
+  
+
+type NavigateFunction = ReturnType<typeof useNavigate>;
 
   return (
     <div className="bg-[#0A0A0A]">
